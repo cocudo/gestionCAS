@@ -1,0 +1,1 @@
+C:\Users\ivanp\source\repos\BlazorAppWasm\release\web.config

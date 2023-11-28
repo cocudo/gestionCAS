@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BlazorAppWasm</title>
+    <base href="/" />
+    <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/app.css" />
+    <link rel="icon" type="image/png" href="favicon.png" />
+    <link href="BlazorAppWasm.styles.css" rel="stylesheet" />
+</head>
+
+<body>
+    <div id="app">
+        <svg class="loading-progress">
+            <circle r="40%" cx="50%" cy="50%" />
+            <circle r="40%" cx="50%" cy="50%" />
+        </svg>
+        <div class="loading-progress-text"></div>
+    </div>
+
+    <div id="blazor-error-ui">
+        An unhandled error has occurred.
+        <a href="" class="reload">Reload</a>
+        <a class="dismiss">🗙</a>
+    </div>
+    <script src="_framework/blazor.webassembly.js"></script>
+</body>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
+   
+    import {
+      getFirestore,
+      collection,
+      addDoc,
+      getDocs,
+      deleteDoc,
+      doc,
+    } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore.js";
+     
+    // Firebase configuration details
+    // replace this configuration with your own configuration details
+    const firebaseConfig = {
+      apiKey: "AIzaSyB3lVKhFTmDBYKvQv4dk-QnpVILC8PQm98",
+      authDomain: "swimburger-cas-app-demo.firebaseapp.com",
+      projectId: "swimburger-cas-app-demo",
+      storageBucket: "swimburger-cas-app-demo.appspot.com",
+      messagingSenderId: "608356517422",
+      appId: "1:608356517422:web:3511adecc46ea0b58d41bf"
+    };
+     
+    // Initialize Firebase with the configuration details
+    const app = initializeApp(firebaseConfig);
+   
+    // Initialize Cloud Firestore and get a reference to the service
+    const db = getFirestore(app); 
+     
+    // Define a function to add a new user to the Firestore database
+    window.addUser = async (user) => {
+      try {
+        const docRef = await addDoc(collection(db, "users"), {
+          name: user,
+        });
+      } catch (e) {
+        console.error("Error adding document: ", e);
+      }
+    }; 
+     
+    // Define a function to get all the users from the Firestore database
+    window.getUsers = async () => {
+      const querySnapshot = await getDocs(collection(db, "users"));
+      let dataArray = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        name: doc.get("name"),
+      }));
+   
+      return dataArray;
+    }; 
+     
+    // Define a function to delete a user from the Firestore database
+    window.deleteUser = async (userId) => {
+      try {
+        await deleteDoc(doc(db, "users", userId));
+        console.log("Document with ID", userId, "deleted successfully.");
+      } catch (e) {
+        console.error("Error deleting document: ", e);
+      }
+    };
+  </script>
+
+</html>
